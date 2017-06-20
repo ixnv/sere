@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  # PostgreSQL database
+  secrets-db:
+    image: postgres:9.4
+    hostname: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=secrets
+    ports:
+      - "5433:5432"
+
+  # nginx
+  secrets-nginx:
+    restart: always
+    image: nginx
+    volumes:
+      - ./server/conf.d:/etc/nginx/conf.d
+    links:
+      - web
+    ports:
+      - "80:80"
+    depends_on:
+      - web
