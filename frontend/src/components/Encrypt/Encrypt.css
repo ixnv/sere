@@ -1,0 +1,26 @@
+.form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.encrypt-desc {
+    font-size: 2em;
+}
+
+.form-group {
+    margin: 1em 0 1em 0;
+}
+
+.form__field {
+    border-radius: 0.05em;
+}
+
+.form__label {
+    display: block;
+}
+
+@media screen and (max-width: 400px){
+    .form {
+        width: auto;
+    }
+}
