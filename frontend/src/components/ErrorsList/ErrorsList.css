@@ -1,0 +1,23 @@
+.errors-list {
+    background-color: #ff8085;
+    color: white;
+    font-size: 1.1em;
+    padding: 1em;
+    animation: stretch 0.2s ease-out 0s normal both running;
+}
+
+.errors-list__item {
+    list-style: none;
+}
+
+@keyframes stretch {
+    0% {
+        transform: scale(.9);
+        color: #ff8085;
+    }
+
+    100% {
+        transform: scale(1);
+        color: white;
+    }
+}

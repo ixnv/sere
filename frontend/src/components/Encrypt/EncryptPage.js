@@ -9,21 +9,19 @@ export default class EncryptPage extends Component {
         this.state = {
             errors: []
         };
-
-        this.setErrors = this.setErrors.bind(this);
     }
 
-    setErrors(errors) {
+    setErrors = errors => {
         this.setState({
             errors
         });
-    }
+    };
 
     render() {
         return (
-            <section>
-                <ErrorsList errors={this.state.errors}/>
+            <section className="container">
                 <EncryptForm {...this.props} setErrors={this.setErrors}/>
+                <ErrorsList errors={this.state.errors}/>
             </section>
         );
     }

@@ -12,20 +12,17 @@ export default class DecryptForm extends Component {
         this.state = {
             password: ''
         };
-
-        this.decrypt = this.decrypt.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
 
-    handlePasswordChange(e) {
+    handlePasswordChange = e => {
         e.preventDefault();
 
         this.setState({
             password: e.target.value
         });
-    }
+    };
 
-    decrypt() {
+    decrypt = () => {
         apiClient.decrypt(this.props.uuid, this.state.password).then((response) => {
             this.props.history.push({
                 pathname: '/result',
@@ -34,21 +31,36 @@ export default class DecryptForm extends Component {
                     text: response.text
                 }
             });
-        }).catch((errors) => {
-            console.log(errors);
-            this.props.setErrors([errors]);
+        }).catch((error) => {
+            switch (error.code) {
+                case 400:
+                    this.props.setErrors([error.data.error + '. Attempts left: ' + error.data.attempts_left]);
+                    break;
+                case 422:
+                    this.props.setErrors(['Please fill in all fields']);
+                    break;
+                case 404:
+                    this.props.setErrors(['Secret expired or already has been decrypted']);
+                    break;
+                default:
+                    this.props.setErrors(['Unexpected error happened :(']);
+                    break;
+            }
         });
-    }
+    };
 
     render() {
         return (
             <form className="form">
                 <div className="form-group">
-                    <label htmlFor="password">Enter the password you were given:</label>
-                    <input name="password" type="text" onChange={this.handlePasswordChange}/>
+                    <label className="label" htmlFor="password">Enter the password you were given:</label>
+                    <input className="form__field" name="password" type="text" autoComplete="off" autoFocus={true}
+                           onChange={this.handlePasswordChange}
+                           onKeyDown={(e) => {if (e.keyCode === 13) e.preventDefault();}}
+                    />
                 </div>
                 <div className="form-group">
-                    <button type="button" onClick={this.decrypt}>Decrypt</button>
+                    <button type="button" className="button" onClick={this.decrypt}>Decrypt</button>
                 </div>
             </form>
         );

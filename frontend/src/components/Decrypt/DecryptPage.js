@@ -9,19 +9,17 @@ export default class DecryptPage extends Component {
         this.state = {
             errors: []
         };
-
-        this.setErrors = this.setErrors.bind(this);
     }
 
-    setErrors(errors) {
+    setErrors = errors => {
         this.setState({
             errors
         });
-    }
+    };
 
     render() {
         return (
-            <section>
+            <section className="container">
                 <ErrorsList errors={this.state.errors}/>
                 <DecryptForm {...this.props} setErrors={this.setErrors} uuid={this.props.match.params.uuid}/>
             </section>

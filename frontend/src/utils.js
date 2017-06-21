@@ -33,15 +33,16 @@ const randomString = () => {
 };
 
 const classnames = (classesMap) => {
-    let classname = '';
+    let classes = [];
+
 
     for (let klass in classesMap) {
         if (classesMap.hasOwnProperty(klass) && classesMap[klass]) {
-            classname += klass;
+            classes.push(klass);
         }
     }
 
-    return classname;
+    return classes.join(' ');
 };
 
 export {httpBuildQuery, randomString, classnames};

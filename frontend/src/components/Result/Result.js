@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from "react-router-dom";
 
 export default class Result extends Component {
     constructor(props) {
@@ -14,9 +15,12 @@ export default class Result extends Component {
         const {label, text} = this.state;
 
         return (
-            <section>
-                <label htmlFor="result">{label}</label>
-                <textarea name="result" cols="30" rows="10" value={text} readOnly/>
+            <section className="container">
+                <div className="form-group">
+                    <label className="label" htmlFor="result">{label}</label>
+                    <textarea className="result-field" name="result" rows="3" value={text}/>
+                </div>
+                <Link to="/">Protect some more important texts</Link>
             </section>
         );
     }
