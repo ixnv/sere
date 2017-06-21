@@ -3,16 +3,12 @@ import './Encrypt.css';
 import apiClient from '../../apiclient';
 
 export default class EncryptForm extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            secret: '',
-            password: '',
-            ttl: 300, // in secs
-            ttl_hr: '5 min' // 300 secs in minutes
-        };
-    }
+    state = {
+        secret: '',
+        password: '',
+        ttl: 300, // in secs
+        ttl_hr: '5 min' // 300 secs in minutes
+    };
 
     handleSecretChange = e => {
         e.preventDefault();

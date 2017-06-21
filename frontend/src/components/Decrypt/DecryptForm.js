@@ -6,13 +6,9 @@ import PropTypes from 'prop-types';
  * normally this would be a React Container or some sort of, but for now this approach is 'OK'
  */
 export default class DecryptForm extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            password: ''
-        };
-    }
+    state = {
+        password: ''
+    };
 
     handlePasswordChange = e => {
         e.preventDefault();
