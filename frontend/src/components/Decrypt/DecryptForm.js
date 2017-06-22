@@ -52,7 +52,7 @@ export default class DecryptForm extends Component {
                     <label className="label" htmlFor="password">Enter the password you were given:</label>
                     <input className="form__field" name="password" type="text" autoComplete="off" autoFocus={true}
                            onChange={this.handlePasswordChange}
-                           onKeyDown={(e) => {if (e.keyCode === 13) e.preventDefault();}}
+                           onKeyDown={(e) => {if (e.keyCode === 13) {e.preventDefault(); this.decrypt();} }}
                     />
                 </div>
                 <div className="form-group">
