@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Secret;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class DeleteExpiredSecrets extends Command
 {
@@ -13,13 +13,15 @@ class DeleteExpiredSecrets extends Command
 
     public function handle()
     {
-        $this->info('start deleting expired secrets');
+        /*
+         * here's the catch - we can run it "every second"-ish, but it will definitely overlap and be hella slow with "withoutOverlapping"
+         * instead we'll run it every minute, not every second. if one will try to "bruteforce", it will be deleted after 3 attempts (in our model code)
+         */
 
-        Secret::where('expires_at', '<', date('Y-m-d H:i:s', time()))->limit(1e6)->chunk(1000, function ($secrets) {
-            Secret::destroy($secrets->pluck('uuid')->toArray());
-            $this->info('processed: ' . $secrets->count());
-        });
+        $this->info('Start deleting expired secrets');
 
-        $this->info('deletion done');
+        Db::table('secrets')->where('expires_at', '<', date('Y-m-d H:i:s', time() + 1))->delete();
+
+        $this->info('Deletion done');
     }
 }
