@@ -30,7 +30,7 @@ const request = (method, url, payload) => {
     });
 };
 
-const ENDPOINT_ROOT = 'http://api.sere.gq/api/secret';
+const ENDPOINT_ROOT = 'https://api.sere.gq/api/secret';
 
 const apiClient = {
     encrypt: (secret, password, expire_sec) => {
