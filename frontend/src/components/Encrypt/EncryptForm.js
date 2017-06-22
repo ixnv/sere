@@ -39,8 +39,10 @@ export default class EncryptForm extends Component {
     };
 
     handleKeyDown = e => {
-        e.preventDefault();
-        this.encrypt();
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            this.encrypt();
+        }
     };
 
     encrypt = () => {
@@ -78,16 +80,16 @@ export default class EncryptForm extends Component {
                     <label className="label" htmlFor="secret">Text you want to protect:</label>
                     <textarea className="form__field" name="secret" cols="30" rows="10" value={this.state.secret} autoFocus={true}
                               onChange={this.handleSecretChange}
-                              onKeyDown={this.handleKeyDown}
                     />
                 </div>
                 <div className="form-group">
                     <label className="label" htmlFor="password">Password (you need to give it to the receiver):</label>
                     <input className="form__field" name="password" type="text" autoComplete="off"
                            onChange={this.handlePasswordChange}
+                           onKeyDown={this.handleKeyDown}
                     />
                     <div>
-                        <span className="form__field-hint">at least any 5 characters</span>
+                        <span className="form__field-hint">at least 5 characters</span>
                     </div>
                 </div>
                 <div className="form-group">
