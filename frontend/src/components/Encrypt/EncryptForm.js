@@ -47,7 +47,7 @@ export default class EncryptForm extends Component {
 
     encrypt = () => {
         if (isNaN(this.state.ttl) || !this.state.secret.length || this.state.password.length) {
-
+            return this.props.setErrors(['Please fill in all fields']);
         }
 
         // FIXME: handle empty values, etc

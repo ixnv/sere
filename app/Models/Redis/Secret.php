@@ -1,28 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Redis;
 
-use App\Models\Traits\UuidPrimaryKey;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 /**
- * Secret model
+ * @property string $ciphertext
+ * @property int $attempts
+ * @property int $expires_at
  *
- * @property string uuid
- * @property string ciphertext
- * @property string ip
- * @property string attempts
- * @property Carbon expires_at
- * @property Carbon created_at
- * @property Carbon updated_at
- *
- * @package App\Models
  */
-class Secret extends Model
+class Secret extends AbstractModel
 {
-    use UuidPrimaryKey;
-
     const CIPHER_METHOD = 'aes-256-cbc';
 
     const ATTEMPTS_MAX = 3;
@@ -34,14 +23,13 @@ class Secret extends Model
 
     protected $fillable = ['expires_at', 'ip'];
 
-    protected $casts = [
-        'expires_at' => 'timestamp'
-    ];
+    protected $prefix = 'secret';
 
-    /**
-     * @param $data
-     * @param $password
-     */
+    protected function getNextIncrementingKey()
+    {
+        return Uuid::uuid4()->toString();
+    }
+
     public function encrypt($data, $password)
     {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::CIPHER_METHOD));
@@ -49,12 +37,6 @@ class Secret extends Model
         $this->ciphertext = $encrypted . ':' . base64_encode($iv);
     }
 
-    /**
-     * Returns false, if decryption failed
-     *
-     * @param $password
-     * @return mixed
-     */
     public function decrypt($password)
     {
         list($encrypted, $iv_b64) = explode(':', $this->ciphertext);
@@ -67,9 +49,6 @@ class Secret extends Model
         $this->attempts += 1;
     }
 
-    /**
-     * @return int
-     */
     public function getAttemptsLeft()
     {
         $left = self::ATTEMPTS_MAX - $this->attempts;
@@ -77,9 +56,6 @@ class Secret extends Model
         return max($left, 0);
     }
 
-    /**
-     * @return bool
-     */
     public function needsDeletion()
     {
         return $this->attempts >= self::ATTEMPTS_MAX || $this->expires_at < time();

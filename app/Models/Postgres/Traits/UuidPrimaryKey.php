@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Traits;
+namespace App\Models\Postgres\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
