@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Services;
 
 use App\Models\Secret;
 
 /*
- * Simple repo, without any criteria handling
+ * what a name
  */
-class SecretRepository
+class SecretService
 {
     /**
      * @param $data
      * @return Secret
      */
-    public function create($data)
+    public function create(array $data): Secret
     {
         $attributes = array_only($data, ['secret', 'password', 'ip', 'expire_sec', 'expires_at']);
 
@@ -39,7 +39,7 @@ class SecretRepository
      * @param string $password
      * @return Secret|bool
      */
-    public function decipher(Secret $secret, $password)
+    public function decipher(Secret $secret, string $password)
     {
         $decrypted = $secret->decrypt($password);
 

@@ -2,9 +2,6 @@ import React, {Component} from 'react';
 import apiClient from '../../apiclient';
 import PropTypes from 'prop-types';
 
-/**
- * normally this would be a React Container or some sort of, but for now this approach is 'OK'
- */
 export default class DecryptForm extends Component {
     state = {
         password: ''

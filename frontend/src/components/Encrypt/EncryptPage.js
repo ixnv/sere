@@ -3,13 +3,9 @@ import EncryptForm from "./EncryptForm";
 import ErrorsList from "../ErrorsList/ErrorsList";
 
 export default class EncryptPage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            errors: []
-        };
-    }
+    state = {
+        errors: []
+    };
 
     setErrors = errors => {
         this.setState({

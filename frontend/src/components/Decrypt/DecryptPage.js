@@ -3,13 +3,9 @@ import ErrorsList from "../ErrorsList/ErrorsList";
 import DecryptForm from "./DecryptForm";
 
 export default class DecryptPage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            errors: []
-        };
-    }
+    state = {
+        errors: []
+    };
 
     setErrors = errors => {
         this.setState({

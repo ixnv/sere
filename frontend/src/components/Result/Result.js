@@ -18,7 +18,7 @@ export default class Result extends Component {
             <section className="container">
                 <div className="form-group">
                     <label className="label" htmlFor="result">{label}</label>
-                    <textarea className="result-field" name="result" rows="3" value={text}/>
+                    <textarea className="result-field" name="result" value={text}/>
                 </div>
                 <Link to="/">Protect some more important texts</Link>
             </section>

@@ -46,8 +46,9 @@ export default class EncryptForm extends Component {
     };
 
     encrypt = () => {
-        if (isNaN(this.state.ttl) || !this.state.secret.length || this.state.password.length) {
-
+        if (isNaN(this.state.ttl) || !this.state.secret.length || !this.state.password.length) {
+            this.props.setErrors(['Please fill in all fields']);
+            return;
         }
 
         // FIXME: handle empty values, etc
@@ -75,7 +76,6 @@ export default class EncryptForm extends Component {
         return (
             <form className="form">
                 <p className="encrypt-desc">Protect any text with password and share the resulting link with anyone</p>
-
                 <div className="form-group">
                     <label className="label" htmlFor="secret">Text you want to protect:</label>
                     <textarea className="form__field" name="secret" cols="30" rows="10" value={this.state.secret} autoFocus={true}
@@ -89,7 +89,7 @@ export default class EncryptForm extends Component {
                            onKeyDown={this.handleKeyDown}
                     />
                     <div>
-                        <span className="form__field-hint">at least 5 characters</span>
+                        <span className="form__field-hint">5 characters recommended</span>
                     </div>
                 </div>
                 <div className="form-group">
