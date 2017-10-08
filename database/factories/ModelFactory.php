@@ -23,7 +23,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\Secret::class, function () {
+$factory->define(App\Models\Redis\Secret::class, function () {
     static $ciphertext;
 
     $encrypt = function ($data, $password) {
