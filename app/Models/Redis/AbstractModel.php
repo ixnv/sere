@@ -6,9 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
 
 /**
- * Class RedisModel
- * Hash based Redis storage. Something like Yii's redis\ActiveRecord
- * @package App\Models
+ * Hash based Redis storage
  */
 abstract class AbstractModel
 {
@@ -19,6 +17,8 @@ abstract class AbstractModel
      */
     protected $prefix;
 
+    protected $primaryKey;
+
     /**
      * Hash's attributes
      *
@@ -26,52 +26,11 @@ abstract class AbstractModel
      */
     protected $attributes;
 
-    /**
-     * Dynamically set attributes on the model.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @return void
-     */
-    public function __set($key, $value)
-    {
-        $this->setAttribute($key, $value);
-    }
-
-    public function setAttribute($key, $value)
-    {
-        $this->attributes[$key] = $value;
-    }
-
-    /**
-     * @param $attributes
-     */
-    public function setAttributes($attributes)
-    {
-        $this->attributes = $attributes;
-    }
-
-    /**
-     * Get next incrementing key
-     *
-     * @return mixed
-     */
-    abstract protected function getNextIncrementingKey();
-
-    /**
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public static function __callStatic(string $method, array $parameters)
+    static public function __callStatic(string $method, array $parameters)
     {
         return (new static)->$method(...$parameters);
     }
 
-    /**
-     * @param $name
-     * @param $arguments
-     */
     public function __call(string $name, array $arguments)
     {
         $method_map = [
@@ -83,10 +42,28 @@ abstract class AbstractModel
         return $this->$actual_method(...$arguments);
     }
 
-    /**
-     * @param $key
-     * @return AbstractModel
-     */
+    public function __set($key, $value)
+    {
+        $this->setAttribute($key, $value);
+    }
+
+    abstract protected function getNextIncrementingKey();
+
+    public function setAttribute($key, $value)
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    public function fill(array $attributes)
+    {
+        $this->setAttributes($attributes);
+    }
+
     public function findByKey($key)
     {
         $data = Redis::hgetall($this->prefix . ':' . $key);
@@ -100,9 +77,6 @@ abstract class AbstractModel
         return $instance;
     }
 
-    /**
-     * @return mixed
-     */
     public function save()
     {
         $key = $this->prefix . ':' . $this->getNextIncrementingKey();
@@ -110,6 +84,11 @@ abstract class AbstractModel
         $status = Redis::hmset($key, $this->attributes);
 
         return $status;
+    }
+
+    public function delete()
+    {
+        Redis::del();
     }
 
     public function newCollection(array $models = [])

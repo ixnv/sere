@@ -4,27 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Secret\ShowRequest;
 use App\Http\Requests\Secret\StoreRequest;
-use App\Models\Secret;
-use App\Repositories\SecretRepository;
+use App\Models\Redis\Secret;
+use App\Services\SecretService;
 
 class SecretController extends Controller
 {
-    private $repository;
+    private $service;
 
-    /**
-     * SecretController constructor.
-     * @param SecretRepository $repository
-     */
-    public function __construct(SecretRepository $repository)
+    public function __construct(SecretService $secretService)
     {
-        $this->repository = $repository;
+        $this->service = $secretService;
     }
 
-    /**
-     * @param ShowRequest $request
-     * @param Secret $secret
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show(ShowRequest $request, Secret $secret)
     {
         $password = $request->get('password');
@@ -35,7 +26,7 @@ class SecretController extends Controller
             return $this->error('Secret expired');
         }
 
-        $text = $this->repository->decipher($secret, $password);
+        $text = $this->service->decipher($secret, $password);
 
         if ($text === false) {
             return $this->error('Wrong password', ['attempts_left' => $secret->getAttemptsLeft()]);
@@ -44,15 +35,11 @@ class SecretController extends Controller
         return response()->json(['text' => $text]);
     }
 
-    /**
-     * @param StoreRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(StoreRequest $request)
     {
         $data = $request->only(['expire_sec', 'secret', 'password', 'ip']);
 
-        $secret = $this->repository->create($data);
+        $secret = $this->service->create($data);
 
         return response()
             ->json(['uuid' => $secret->uuid])

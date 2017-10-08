@@ -2,6 +2,7 @@
 
 namespace App\Models\Postgres;
 
+use App\Models\Contracts\SecretInterface;
 use App\Models\Postgres\Traits\UuidPrimaryKey;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Secret extends Model
+class Secret extends Model implements SecretInterface
 {
     use UuidPrimaryKey;
 
@@ -38,31 +39,24 @@ class Secret extends Model
         'expires_at' => 'timestamp'
     ];
 
-    /**
-     * @param $data
-     * @param $password
-     */
-    public function encrypt($data, $password)
+    public function encrypt(string $text, string $password): void
     {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::CIPHER_METHOD));
-        $encrypted = openssl_encrypt($data, self::CIPHER_METHOD, $password, 0, $iv);
+        $encrypted = openssl_encrypt($text, self::CIPHER_METHOD, $password, 0, $iv);
         $this->ciphertext = $encrypted . ':' . base64_encode($iv);
     }
 
     /**
      * Returns false, if decryption failed
-     *
-     * @param $password
-     * @return mixed
      */
-    public function decrypt($password)
+    public function decrypt(string $password): string
     {
         list($encrypted, $iv_b64) = explode(':', $this->ciphertext);
         $iv = base64_decode($iv_b64);
         return openssl_decrypt($encrypted, self::CIPHER_METHOD, $password, 0, $iv);
     }
 
-    public function increaseAttempts()
+    public function increaseAttempts(): void
     {
         $this->attempts += 1;
     }
@@ -70,7 +64,7 @@ class Secret extends Model
     /**
      * @return int
      */
-    public function getAttemptsLeft()
+    public function getAttemptsLeft(): int
     {
         $left = self::ATTEMPTS_MAX - $this->attempts;
 
@@ -80,7 +74,7 @@ class Secret extends Model
     /**
      * @return bool
      */
-    public function needsDeletion()
+    public function needsDeletion(): bool
     {
         return $this->attempts >= self::ATTEMPTS_MAX || $this->expires_at < time();
     }

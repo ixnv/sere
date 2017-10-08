@@ -30,6 +30,7 @@ const request = (method, url, payload) => {
     });
 };
 
+// TODO: declare in webpack' definePlugin()
 const ENDPOINT_ROOT = 'https://api.sere.gq/api/secret';
 
 const apiClient = {
